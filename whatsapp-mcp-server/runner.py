@@ -41,6 +41,59 @@ def generate_gemini_response(prompt: str) -> str:
     )
     return response.text
 
+
+
+from flask import Flask, Response
+import time
+import json
+from flask import jsonify
+from mcp.server.fastmcp import FastMCP
+from flask import Flask, render_template
+from whatsapp import (
+    search_contacts as whatsapp_search_contacts,
+    list_messages as whatsapp_list_messages,
+    list_chats as whatsapp_list_chats,
+    get_chat as whatsapp_get_chat,
+    get_direct_chat_by_contact as whatsapp_get_direct_chat_by_contact,
+    get_contact_chats as whatsapp_get_contact_chats,
+    get_last_interaction as whatsapp_get_last_interaction,
+    get_message_context as whatsapp_get_message_context,
+    send_message as whatsapp_send_message,
+    send_file as whatsapp_send_file,
+    send_audio_message as whatsapp_audio_voice_message,
+    download_media as whatsapp_download_media
+)
+app = Flask(__name__)
+@app.route('/tools', methods=['GET'])
+def list_tools():
+    """Endpoint to list all tools and their descriptions."""
+    tools = {
+        "search_contacts": whatsapp_search_contacts,
+        "list_messages": whatsapp_list_messages,
+        "list_chats": whatsapp_list_chats,
+        "get_chat": whatsapp_get_chat,
+        "get_direct_chat_by_contact": whatsapp_get_direct_chat_by_contact,
+        "get_contact_chats": whatsapp_get_contact_chats,
+        "get_last_interaction": whatsapp_get_last_interaction,
+        "get_message_context": whatsapp_get_message_context,
+        "send_message": whatsapp_send_message,
+        "send_file": whatsapp_send_file,
+        "send_audio_message": whatsapp_audio_voice_message,
+        "download_media": whatsapp_download_media
+    }
+
+    # Prepare the tools data for rendering
+    tools_info = [
+        {"name": tool_name, "description": tool.__doc__}
+        for tool_name, tool in tools.items()
+    ]
+    
+    # Render the HTML template with tools data
+    return render_template('tools.html', tools_info=tools_info)
+
+
+
+
 from flask import Flask, request, jsonify
 @app.post("/incoming")
 def handle_message():
