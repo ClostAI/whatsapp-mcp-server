@@ -1,0 +1,6 @@
+praisonaiagents[llm,mcp]
+gradio
+Flask
+google-genai
+google-generativeai
+Flask[async]>=2.0
